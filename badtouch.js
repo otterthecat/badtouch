@@ -1,6 +1,6 @@
 (function(window){
 
-    var _tStart, _tEnd, _dom, _identifier;
+    var _tStart, _tEnd, _lastX, _dom, _identifier;
 
     var _tap = new Event('tap');
     var _tapLong = new Event('tapLong');
@@ -14,7 +14,7 @@
         'swipeRight': _swipeRight
     };
 
-    var getElements = function(selector){
+    var _getElements = function(selector){
 
         if(selector.indexOf('#') > -1) {
 
@@ -30,19 +30,30 @@
     };
 
 
-    var evalTouch = function(start, end, e){
+    var _evalTouch = function(start, end){
 
-        if(_identifier !== e.identifier){
+        if(_identifier !== end.identifier){
 
             return alert('identifiers do not match');
         }
 
-        if((end - start) < 300) {
+        if((end.timeStamp - start.timeStamp) < 300) {
 
-            e.target.dispatchEvent(_touches.tap);
+            return start.target.dispatchEvent(_touches.tap);
         } else {
 
-           e.target.dispatchEvent(_touches.tapLong);
+
+            if((start.pageX - _lastX) > 100){
+
+                return start.target.dispatchEvent(_touches.swipeLeft);
+            }
+
+            if((_lastX - start.pageX) > 100){
+
+                return start.target.dispatchEvent(_touches.swipeRight);
+            }
+
+           return start.target.dispatchEvent(_touches.tapLong);
         }
 
         start = null;
@@ -50,21 +61,26 @@
         e = null;
     };
 
-    var down = function(e){
+    var _down = function(e){
         _identifier = e.identifier;
-        _tStart = e.timeStamp;
+        _tStart = e;
     };
 
+    var _move = function(e){
 
-    var up = function(e){
+        e.preventDefault();
+        _lastX = e.pageX;
+    };
 
-        _tEnd = e.timeStamp;
-        evalTouch.call(this, _tStart, _tEnd, e);
+    var _up = function(e){
+
+        _tEnd = e;
+        _evalTouch.call(this, _tStart, _tEnd);
     };
 
     var _touch = function(selector){
 
-        _dom = getElements(selector);
+        _dom = _getElements(selector);
 
         for(var i = 0; i < _dom.length; i += 1){
 
@@ -73,8 +89,9 @@
                 _dom[i][m] = _touch.prototype[m];
             }
 
-            document.addEventListener('touchstart', down, false);
-            document.addEventListener('touchend', up, false);
+            document.addEventListener('touchstart', _down, false);
+            document.addEventListener('touchmove', _move, false);
+            document.addEventListener('touchend', _up, false);
         }
 
         return _touch.prototype;
