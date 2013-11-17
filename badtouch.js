@@ -1,12 +1,12 @@
 (function(window){
 
-    var _tStart, _tEnd;
+    var _tStart, _tEnd, _dom;
 
     var getDOM = function(selector){
 
         if(selector.indexOf('#') > -1) {
 
-            return document.getElementById(selctor);
+            return [document.getElementById(selector.substr(1, selector.length - 1))];
         } else if (selector.indexOf('.') > -1) {
 
             return document.getElementsByClassName(selector);
@@ -27,10 +27,10 @@
 
         if((end.timeStamp - start.timeStamp) < 500) {
 
-            this.tap(start);
+            this._events['tap'].call(this, start)
         } else {
 
-            this.tapLong(start);
+           this._events['tapLong'].call(this, start);
         }
     }
 
@@ -48,33 +48,32 @@
 
     var _touch = function(selector){
 
-        var _dom = getDOM(selector);
+        _dom = getDOM(selector);
 
         for(var i = 0; i < _dom.length; i += 1){
 
-            for(m in _touch.prototype){
+            for( var m in _touch.prototype){
 
-                _dom[i][m] = _touch.prototype[m]
+                _dom[i][m] = _touch.prototype[m];
+                _dom[i]._events = {};
             }
 
             _dom[i].addEventListener('touchstart', down, false);
             _dom[i].addEventListener('touchend', up, false);
         }
 
-        return _dom;
+        return _touch.prototype;
     };
 
 
     _touch.prototype = {
 
-        tap: function(e){
+        on: function(name, callback){
 
-            alert(this);
-        },
+            for(var i = 0; i < _dom.length; i += 1){
 
-        tapLong: function(e){
-
-            alert('long tap');
+                _dom[i]._events[name] = callback;
+            }
         }
     };
 

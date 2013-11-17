@@ -6,6 +6,7 @@
     <script src="badtouch.js"></script>
 </head>
 <body>
+    <h1 id="header">My Header</h1>
     <ul>
         <li>item 1</li>
         <li>item 2</li>
@@ -15,9 +16,16 @@
 
     <script>
 
-        console.log(_touch);
+        _touch('#header').on('tapLong', function(e){
 
-        _touch('li');
+            alert('content is ' + this.innerHTML);
+        });
+
+        _touch('li').on('tap', function(e){
+
+            alert(e);
+            alert(this);
+        });
 
 
     </script>
