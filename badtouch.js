@@ -1,8 +1,20 @@
 (function(window){
 
-    var _tStart, _tEnd, _dom;
+    var _tStart, _tEnd, _dom, _identifier;
 
-    var getDOM = function(selector){
+    var _tap = new Event('tap');
+    var _tapLong = new Event('tapLong');
+    var _swipeLeft = new Event('swipeLeft');
+    var _swipeRight = new Event('swipeRight');
+
+    var _touches = {
+        'tap': _tap,
+        'tapLong': _tapLong,
+        'swipeLeft': _swipeLeft,
+        'swipeRight': _swipeRight
+    };
+
+    var getElements = function(selector){
 
         if(selector.indexOf('#') > -1) {
 
@@ -18,53 +30,55 @@
     };
 
 
-    var evalTouch = function(start, end){
+    var evalTouch = function(start, end, e){
 
-        if(start.target !== end.target){
+        if(_identifier !== e.identifier){
 
-           return alert("went off target");
+            return alert('identifiers do not match');
         }
 
-        if((end.timeStamp - start.timeStamp) < 500) {
+        if((end - start) < 300) {
 
-            this._events['tap'].call(this, start)
+            e.target.dispatchEvent(_touches.tap);
         } else {
 
-           this._events['tapLong'].call(this, start);
+           e.target.dispatchEvent(_touches.tapLong);
         }
-    }
+
+        start = null;
+        end = null;
+        e = null;
+    };
 
     var down = function(e){
-
-        _tStart = e;
-    }
+        _identifier = e.identifier;
+        _tStart = e.timeStamp;
+    };
 
 
     var up = function(e){
 
-        evalTouch.call(this, _tStart, e);
-    }
-
+        _tEnd = e.timeStamp;
+        evalTouch.call(this, _tStart, _tEnd, e);
+    };
 
     var _touch = function(selector){
 
-        _dom = getDOM(selector);
+        _dom = getElements(selector);
 
         for(var i = 0; i < _dom.length; i += 1){
 
             for( var m in _touch.prototype){
 
                 _dom[i][m] = _touch.prototype[m];
-                _dom[i]._events = {};
             }
 
-            _dom[i].addEventListener('touchstart', down, false);
-            _dom[i].addEventListener('touchend', up, false);
+            document.addEventListener('touchstart', down, false);
+            document.addEventListener('touchend', up, false);
         }
 
         return _touch.prototype;
     };
-
 
     _touch.prototype = {
 
@@ -72,12 +86,14 @@
 
             for(var i = 0; i < _dom.length; i += 1){
 
-                _dom[i]._events[name] = callback;
+                _dom[i].addEventListener(name, callback, false);
             }
+        },
+
+        off: function(){
+            // placeholder
         }
     };
 
-
     window._touch = _touch;
-
 }(window));

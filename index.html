@@ -14,17 +14,21 @@
     </ul>
 
 
+    <textarea name="display" id="display" cols="30" rows="10"></textarea>
+
     <script>
+
+        var display = document.getElementById('display');
+
 
         _touch('#header').on('tapLong', function(e){
 
-            alert('content is ' + this.innerHTML);
+            display.value = this.innerHTML;
         });
 
         _touch('li').on('tap', function(e){
 
-            alert(e);
-            alert(this);
+            display.value = this.innerHTML;
         });
 
 
