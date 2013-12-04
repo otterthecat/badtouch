@@ -20,26 +20,9 @@
 
         var display = document.getElementById('display');
 
-
-        _touch('#header').on('tapLong', function(e){
-
-            display.value = this.innerHTML;
-        });
-
         _touch('li').on('tap', function(e){
 
             display.value = this.innerHTML;
-        });
-
-
-        _touch('body').on('swipeLeft', function(e){
-
-            display.value = "Swiped Left";
-        });
-
-        _touch('body').on('swipeRight', function(e){
-
-            display.value = "Right Swipe";
         });
 
     </script>
