@@ -19,11 +19,11 @@
     <script>
 
         var display = document.getElementById('display');
-
-        _touch('li').on('tap', function(e){
-
+        var updateContent = function(e){
             display.value = this.innerHTML;
-        });
+        }
+
+        _touch('li').on('tap', updateContent);
 
     </script>
 </body>

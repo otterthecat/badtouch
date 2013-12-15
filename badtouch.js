@@ -52,11 +52,23 @@
         if(ev == 'tap' && !document.touchstart){
 
             this.addEventListener('click', callback, false);
-        }
+        } else {
 
-        this.addEventListener(ev, callback, false);
+            this.addEventListener(ev, callback, false);
+        }
     };
 
+
+    var __removeEvents = function(ev, callback){
+
+        if(ev == 'tap' && !document.touchstart){
+
+            this.removeEventListener('click', callback, false);
+        } else {
+
+            this.removeEventListener(ev, callback, false);
+        }
+    };
 
     var _touch = function(selector){
 
@@ -76,6 +88,14 @@
             this.elements.forEach(function(el, idx, arr){
 
                 __applyEvents.call(el, ev, callback);
+            });
+        }.bind(this),
+
+        off: function(ev, callback){
+
+            this.elements.forEach(function(el, idx, arr){
+
+                __removeEvents.call(el, ev, callback);
             });
         }.bind(this)
     };
