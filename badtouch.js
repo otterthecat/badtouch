@@ -2,6 +2,7 @@
 
     var __tStart, __tEnd;
     var __tap = new Event('tap');
+    var __hasTouch = document.ontouchstart !== undefined;
 
     var __touchEvents = {
         'tap': __tap
@@ -49,7 +50,7 @@
 
     var __applyEvents = function(ev, callback){
 
-        if(ev == 'tap' && !document.touchstart){
+        if(!__hasTouch && ev === 'tap'){
 
             this.addEventListener('click', callback, false);
         } else {
@@ -61,7 +62,7 @@
 
     var __removeEvents = function(ev, callback){
 
-        if(ev == 'tap' && !document.touchstart){
+        if(!__hasTouch && ev === 'tap'){
 
             this.removeEventListener('click', callback, false);
         } else {
@@ -75,9 +76,11 @@
         // property is an array
         this.elements = __getElements(selector);
 
-        document.addEventListener('touchstart', __down, false);
-        document.addEventListener('touchend', __up, false);
+        if(__hasTouch){
 
+            document.addEventListener('touchstart', __down, false);
+            document.addEventListener('touchend', __up, false);
+        }
         return _touch.prototype;
     };
 
