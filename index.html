@@ -2,6 +2,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="minimum-scale=1.0, width=device-width, maximum-scale=1, user-scalable=no" name="viewport" />
     <title>Document</title>
     <script src="badtouch.js"></script>
 </head>
@@ -16,14 +18,30 @@
 
     <textarea name="display" id="display" cols="30" rows="10"></textarea>
 
+
+    <div id="touchit" style="width: 500px; height: 500px; background: #ccc"></div>
     <script>
 
         var display = document.getElementById('display');
+
         var updateContent = function(e){
-            display.value = this.innerHTML;
-        }
+            display.value += this.innerHTML + "\n";
+        };
+
+        var leftHandler = function(e){
+
+            display.value += "swipe left \n";
+        };
+
+        var rightHandler = function(e){
+
+            display.value += "swipe right \n";
+        };
 
         _touch('li').on('tap', updateContent);
+
+        _touch('div').on('swipeLeft', leftHandler);
+        _touch('div').on('swipeRight', rightHandler);
 
     </script>
 </body>
