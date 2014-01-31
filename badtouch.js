@@ -1,12 +1,16 @@
 (function(window){
 
     var __tStart, __tEnd, __direction;
-    var __hasTouch = document.ontouchstart !== undefined;
+    var __hasTouch = 'ontouchstart' in window;
+
+    // Would prefer to create instance of Event object,
+    // but Samsung Andriod doesn't like it. The deprecated
+    // custom event approach works though. Go figure.
+    var event = document.createEvent('Event');
+    event.initEvent('tap', true, true);
 
     var __touchEvents = {
-        'tap': new Event('tap'),
-        'swipeLeft': new Event('swipeLeft'),
-        'swipeRight': new Event('swipeRight')
+        'tap': event
     };
 
     var __evalTouch = function(){
@@ -23,25 +27,12 @@
             __tStart.target.dispatchEvent(__touchEvents['swipe' + __direction]);
             __tStart = __tEnd = null;
             return;
-        };
+        }
     };
 
     var __down = function(e){
 
         __tStart = e;
-    };
-
-    var __move = function(e){
-        if(__tStart.pageX > e.pageX){
-
-            __direction = "Left";
-        };
-
-        if(__tStart.pageX < e.pageX){
-
-            __direction = "Right";
-        };
-        __tEnd = e;
     };
 
     var __up = function(e){
@@ -105,7 +96,6 @@
         if(__hasTouch){
 
             document.addEventListener('touchstart', __down, false);
-            document.addEventListener('touchmove', __move, false);
             document.addEventListener('touchend', __up, false);
         }
         return _touch.prototype;
@@ -115,7 +105,7 @@
 
         on: function(ev, callback){
 
-            this.elements.forEach(function(el, idx, arr){
+            this.elements.forEach(function(el){
 
                 __applyEvents.call(el, ev, callback);
             });
@@ -123,7 +113,7 @@
 
         off: function(ev, callback){
 
-            this.elements.forEach(function(el, idx, arr){
+            this.elements.forEach(function(el){
 
                 __removeEvents.call(el, ev, callback);
             });

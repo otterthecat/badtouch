@@ -28,20 +28,7 @@
             display.value += this.innerHTML + "\n";
         };
 
-        var leftHandler = function(e){
-
-            display.value += "swipe left \n";
-        };
-
-        var rightHandler = function(e){
-
-            display.value += "swipe right \n";
-        };
-
         _touch('li').on('tap', updateContent);
-
-        _touch('div').on('swipeLeft', leftHandler);
-        _touch('div').on('swipeRight', rightHandler);
 
     </script>
 </body>
